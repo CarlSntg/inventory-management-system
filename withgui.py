@@ -185,41 +185,67 @@ def update_product_gui():
                 continue
 
             # Validate new quantity
-            if not new_quantity.isdigit():
+            if new_quantity and not new_quantity.isdigit():
                 sg.popup("Invalid input. Please enter a valid integer for the new quantity.")
                 continue
 
             # Validate new reorder level
-            if not new_reorder_level.isdigit():
+            if new_reorder_level and not new_reorder_level.isdigit():
                 sg.popup("Invalid input. Please enter a valid integer for the new reorder level.")
                 continue
 
             # Validate new unit price
-            try:
-                new_unit_price = float(new_unit_price)
-            except ValueError:
-                sg.popup("Invalid input. Please enter a valid float for the new unit price.")
-                continue
+            if new_unit_price:
+                try:
+                    new_unit_price = float(new_unit_price)
+                except ValueError:
+                    sg.popup("Invalid input. Please enter a valid float for the new unit price.")
+                    continue
 
             # Validate new cost per unit
-            try:
-                new_cost_per_unit = float(new_cost_per_unit)
-            except ValueError:
-                sg.popup("Invalid input. Please enter a valid float for the new cost per unit.")
-                continue
+            if new_cost_per_unit:
+                try:
+                    new_cost_per_unit = float(new_cost_per_unit)
+                except ValueError:
+                    sg.popup("Invalid input. Please enter a valid float for the new cost per unit.")
+                    continue
+
+            # Generate SQL update statement based on non-null fields
+            update_statement = "UPDATE Product SET"
+            update_values = []
+
+            if new_quantity:
+                update_statement += " QuantityInStock = ?,"
+                update_values.append(int(new_quantity))
+
+            if new_reorder_level:
+                update_statement += " ReorderLevel = ?,"
+                update_values.append(int(new_reorder_level))
+
+            if new_unit_price:
+                update_statement += " UnitPrice = ?,"
+                update_values.append(float(new_unit_price))
+
+            if new_cost_per_unit:
+                update_statement += " CostPerUnit = ?,"
+                update_values.append(float(new_cost_per_unit))
+
+            # Remove the trailing comma
+            update_statement = update_statement.rstrip(',')
+
+            # Add WHERE clause for the specific product ID
+            update_statement += " WHERE ProductID = ?"
+            update_values.append(int(product_id))
 
             # Update the product details in the database
-            cursor.execute('''
-                UPDATE Product
-                SET QuantityInStock = ?,
-                    ReorderLevel = ?,
-                    UnitPrice = ?,
-                    CostPerUnit = ?
-                WHERE ProductID = ?
-            ''', (int(new_quantity), int(new_reorder_level), float(new_unit_price), float(new_cost_per_unit), int(product_id)))
+            cursor.execute(update_statement, tuple(update_values))
 
             conn.commit()
-            sg.popup(f'Product updated successfully:\nProduct ID: {product_id}\nNew Quantity in Stock: {new_quantity}\nNew Reorder Level: {new_reorder_level}\nNew Unit Price: {new_unit_price}\nNew Cost Per Unit: {new_cost_per_unit}')
+            sg.popup(f'Product updated successfully:\nProduct ID: {product_id}\n'
+                     f'New Quantity in Stock: {new_quantity if new_quantity else "Unchanged"}\n'
+                     f'New Reorder Level: {new_reorder_level if new_reorder_level else "Unchanged"}\n'
+                     f'New Unit Price: {new_unit_price if new_unit_price else "Unchanged"}\n'
+                     f'New Cost Per Unit: {new_cost_per_unit if new_cost_per_unit else "Unchanged"}')
             break
 
     update_product_window.close()
