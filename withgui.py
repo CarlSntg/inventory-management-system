@@ -38,10 +38,15 @@ def view_stock_levels():
         sg.popup("No products in the inventory.")
         return
 
+    max_table_height = 15
+
+    # Determine the number of rows to display in the table
+    num_rows_to_display = min(len(rows), max_table_height)
+
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level", "Price", "Cost Per Unit"],
                   auto_size_columns=False, justification='right', display_row_numbers=False,
-                  num_rows=min(25, len(rows)))],
+                  num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
         [sg.Button('OK')]
     ]
 
@@ -65,11 +70,15 @@ def view_sales_data():
         sg.popup("No sales data available.")
         return
 
-    # Create a PrettyTable and add columns
+    max_table_height = 15
+
+    # Determine the number of rows to display in the table
+    num_rows_to_display = min(len(rows), max_table_height)
+
     layout = [
         [sg.Table(values=rows, headings=["Sale ID", "Product ID", "Quantity Sold", "Sale Date"],
                   auto_size_columns=False, justification='right', display_row_numbers=False,
-                  num_rows=min(25, len(rows)))],
+                  num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
         [sg.Button('OK')]
     ]
 
@@ -98,10 +107,15 @@ def generate_reorder_alerts():
         sg.popup("No products need to be reordered.")
         return
 
+    max_table_height = 15
+
+    # Determine the number of rows to display in the table
+    num_rows_to_display = min(len(rows), max_table_height)
+
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level"],
                   auto_size_columns=False, justification='right', display_row_numbers=False,
-                  num_rows=min(25, len(rows)))],
+                  num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
         [sg.Button('OK')]
     ]
 
@@ -408,6 +422,11 @@ def generate_reports():
     header = ["Product ID", "Name", "Total Sales"]
     table_data = [list(row) for row in rows]
 
+    max_table_height = 9
+
+    # Determine the number of rows to display in the table
+    num_rows_to_display = min(len(rows), max_table_height)
+
     # Calculate total revenue
     cursor.execute('''
         SELECT SUM(QuantitySold * UnitPrice) AS TotalRevenue
@@ -429,7 +448,7 @@ def generate_reports():
 
     layout = [
         [sg.Table(values=table_data, headings=header, auto_size_columns=False,
-                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows * 2)))],
+                  justification='left', display_row_numbers=False, num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
         [sg.Text(f"Total Revenue: ${total_revenue:.2f}")],
         [sg.Text(f"Total Cost of Goods Sold: ${total_cogs:.2f}")],
         [sg.Text(f"Overall Profit Margin: {overall_profit_margin:.2f}%")],
@@ -447,6 +466,7 @@ def generate_reports():
     window.close()
 
 
+sg.theme('DarkGreen1')
 # Define the layout of the main menu
 menu_layout = [
     [sg.Text('Inventory Management System', font=('Helvetica', 25), justification='center', pad=((0, 0), (5, 5)))],
@@ -461,7 +481,6 @@ menu_layout = [
 menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True, size=(600, 300))
 
 if __name__ == '__main__':
-    sg.theme('DarkTeal2')
     # Event loop for the main menu
     while True:
 
