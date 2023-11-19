@@ -121,11 +121,11 @@ def generate_reorder_alerts_gui():
 # Function to add a new product using PySimpleGUI
 def add_product_gui():
     layout = [
-        [sg.Text('Product Name:'), sg.InputText(key='product_name')],
-        [sg.Text('Quantity in Stock:'), sg.InputText(key='quantity_in_stock')],
-        [sg.Text('Reorder Level:'), sg.InputText(key='reorder_level')],
-        [sg.Text('Cost Per Unit:'), sg.InputText(key='cost_per_unit')],
-        [sg.Text('Unit Price:'), sg.InputText(key='unit_price')],
+        [sg.Text('Product Name:', s=15, justification="r"), sg.InputText(key='product_name')],
+        [sg.Text('Quantity in Stock:', s=15, justification="r"), sg.InputText(key='quantity_in_stock')],
+        [sg.Text('Reorder Level:', s=15, justification="r"), sg.InputText(key='reorder_level')],
+        [sg.Text('Cost Per Unit:', s=15, justification="r"), sg.InputText(key='cost_per_unit')],
+        [sg.Text('Unit Price:', s=15, justification="r"), sg.InputText(key='unit_price')],
         [sg.Button('Add'), sg.Button('Cancel')]
     ]
 
@@ -159,11 +159,11 @@ def add_product_gui():
 # Function to update a product using PySimpleGUI
 def update_product_gui():
     layout = [
-        [sg.Text('Product ID:'), sg.InputText(key='product_id')],
-        [sg.Text('New Quantity in Stock:'), sg.InputText(key='new_quantity')],
-        [sg.Text('New Reorder Level:'), sg.InputText(key='new_reorder_level')],
-        [sg.Text('New Unit Price:'), sg.InputText(key='new_unit_price')],
-        [sg.Text('New Cost Per Unit:'), sg.InputText(key='new_cost_per_unit')],
+        [sg.Text('Product ID:', s=17, justification="r"), sg.InputText(key='product_id')],
+        [sg.Text('New Quantity in Stock:', s=17, justification="r"), sg.InputText(key='new_quantity')],
+        [sg.Text('New Reorder Level:', s=17, justification="r"), sg.InputText(key='new_reorder_level')],
+        [sg.Text('New Unit Price:', s=17, justification="r"), sg.InputText(key='new_unit_price')],
+        [sg.Text('New Cost Per Unit:', s=17, justification="r"), sg.InputText(key='new_cost_per_unit')],
         [sg.Button('Update'), sg.Button('Cancel')]
     ]
 
@@ -311,9 +311,9 @@ def delete_product_gui():
 # Function to add sales data using PySimpleGUI
 def add_sales_gui():
     layout = [
-        [sg.Text('Product ID:'), sg.InputText(key='product_id')],
-        [sg.Text('Quantity Sold:'), sg.InputText(key='quantity_sold')],
-        [sg.Text('Sale Date (YYYY-MM-DD):'), sg.InputText(key='sale_date')],
+        [sg.Text('Product ID:', s=15, justification="r"), sg.InputText(key='product_id')],
+        [sg.Text('Quantity Sold:', s=15, justification="r"), sg.InputText(key='quantity_sold')],
+        [sg.Text('Sale Date (YYYY-MM-DD):', s=15, justification="r"), sg.InputText(key='sale_date')],
         [sg.Button('Add'), sg.Button('Cancel')]
     ]
 
@@ -428,8 +428,8 @@ def generate_reports_gui():
     # Create a PySimpleGUI window to display the report
     layout = [
         [sg.Table(values=table_data, headings=header, auto_size_columns=False,
-                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows * 2)), size=(800, 200))],
-        [sg.Text(f"Total Revenue: ${total_revenue:.2f}", size=(80, 1))],
+                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows * 2)))],
+        [sg.Text(f"Total Revenue: ${total_revenue:.2f}")],
         [sg.Text(f"Total Cost of Goods Sold: ${total_cogs:.2f}")],
         [sg.Text(f"Overall Profit Margin: {overall_profit_margin:.2f}%")],
         [sg.Button('Close')]
