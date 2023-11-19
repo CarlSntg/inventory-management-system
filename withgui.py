@@ -29,7 +29,7 @@ cursor.execute('''
 ''')
 
 
-# Function to display stock levels
+# Display stock levels
 def view_stock_levels():
     cursor.execute("SELECT * FROM Product")
     rows = cursor.fetchall()
@@ -61,7 +61,7 @@ def view_stock_levels():
     window.close()
 
 
-# Function to display sales data
+# Display sales data
 def view_sales_data():
     cursor.execute("SELECT * FROM Sales")
     rows = cursor.fetchall()
@@ -93,7 +93,7 @@ def view_sales_data():
     window.close()
 
 
-# Function to generate reorder alerts
+# Generate reorder alerts
 def generate_reorder_alerts():
     cursor.execute('''
         SELECT ProductID, ProductName, QuantityInStock, ReorderLevel
@@ -130,7 +130,7 @@ def generate_reorder_alerts():
     window.close()
 
 
-# Function to add a new product
+# Add a new product
 def add_product():
     layout = [
         [sg.Text('Product Name:', s=15, justification="r"), sg.InputText(key='product_name')],
@@ -174,7 +174,7 @@ def add_product():
     add_product_window.close()
 
 
-# Function to update a product
+# Update a product
 def update_product():
     layout = [
         [sg.Text('Product ID:', s=17, justification="r"), sg.InputText(key='product_id')],
@@ -278,7 +278,7 @@ def update_product():
     update_product_window.close()
 
 
-# Function to delete a product
+# Delete a product
 def delete_product():
     layout = [
         [sg.Text('Product ID to Delete:'), sg.InputText(key='product_id')],
@@ -326,7 +326,7 @@ def delete_product():
     delete_product_window.close()
 
 
-# Function to add sales data
+# Add sales data
 def add_sales():
     layout = [
         [sg.Text('Product ID:', s=20, justification="r"), sg.InputText(key='product_id')],
@@ -404,7 +404,7 @@ def add_sales():
     add_sales_window.close()
 
 
-# Function to generate reports
+# Generate reports
 def generate_reports():
     cursor.execute('''
         SELECT Product.ProductID, Product.ProductName, SUM(Sales.QuantitySold) as TotalSales
@@ -466,21 +466,23 @@ def generate_reports():
     window.close()
 
 
-sg.theme('DarkGreen1')
-# Define the layout of the main menu
-menu_layout = [
-    [sg.Text('Inventory Management System', font=('Helvetica', 25), justification='center', pad=((0, 0), (5, 5)))],
-    [sg.Button('View Stock Levels', size=(20, 2)), sg.Button('Add Product', size=(20, 2))],
-    [sg.Button('View Sales Data', size=(20, 2)), sg.Button('Update Product', size=(20, 2))],
-    [sg.Button('Reorder Alerts', size=(20, 2)), sg.Button('Delete Product', size=(20, 2))],
-    [sg.Button('Generate Reports', size=(20, 2)), sg.Button('Add Sales', size=(20, 2))],
-    [sg.Button('Exit', size=(20, 2))]
-]
-
-# Create the main menu window
-menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True, size=(600, 300))
-
 if __name__ == '__main__':
+    # Define UI theme
+    sg.theme('DarkGreen1')
+
+    # Define the layout of the main menu
+    menu_layout = [
+        [sg.Text('Inventory Management System', font=('Helvetica', 25), justification='center', pad=((0, 0), (5, 5)))],
+        [sg.Button('View Stock Levels', size=(20, 2)), sg.Button('Add Product', size=(20, 2))],
+        [sg.Button('View Sales Data', size=(20, 2)), sg.Button('Update Product', size=(20, 2))],
+        [sg.Button('Reorder Alerts', size=(20, 2)), sg.Button('Delete Product', size=(20, 2))],
+        [sg.Button('Generate Reports', size=(20, 2)), sg.Button('Add Sales', size=(20, 2))],
+        [sg.Button('Exit', size=(20, 2))]
+    ]
+
+    # Create the main menu window
+    menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True, size=(600, 300))
+
     # Event loop for the main menu
     while True:
 
