@@ -1,6 +1,7 @@
 import sqlite3
 import PySimpleGUI as sg
 import datetime
+from prettytable import PrettyTable
 
 # Connect to SQLite database or create it if not exists
 conn = sqlite3.connect("inventory_management.db")
@@ -373,6 +374,65 @@ def add_sales_gui():
 
     add_sales_window.close()
 
+# Function to generate reports using PySimpleGUI
+def generate_reports_gui():
+    # Execute SQL queries to get data for the report
+    cursor.execute('''
+        SELECT Product.ProductID, Product.ProductName, SUM(Sales.QuantitySold) as TotalSales
+        FROM Product
+        LEFT JOIN Sales ON Product.ProductID = Sales.ProductID
+        GROUP BY Product.ProductID
+    ''')
+
+    rows = cursor.fetchall()
+
+    if not rows:
+        sg.popup("No sales data available for generating reports.")
+        return
+
+    # Create a PySimpleGUI table to hold the report
+    header = ["Product ID", "Name", "Total Sales"]
+    table_data = [list(row) for row in rows]
+
+    # Calculate total revenue
+    cursor.execute('''
+        SELECT SUM(QuantitySold * UnitPrice) AS TotalRevenue
+        FROM Sales
+        INNER JOIN Product ON Sales.ProductID = Product.ProductID
+    ''')
+    total_revenue = cursor.fetchone()[0] or 0
+
+    # Calculate total cost of goods sold
+    cursor.execute('''
+        SELECT SUM(QuantitySold * CostPerUnit) AS TotalCOGS
+        FROM Sales
+        INNER JOIN Product ON Sales.ProductID = Product.ProductID
+    ''')
+    total_cogs = cursor.fetchone()[0] or 0
+
+    # Calculate overall profit margin
+    overall_profit_margin = 0 if total_revenue == 0 else ((total_revenue - total_cogs) / total_revenue) * 100
+
+    # Create a PySimpleGUI window to display the report
+    layout = [
+        [sg.Table(values=table_data, headings=header, auto_size_columns=False,
+                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows*2)), size=(800, 200))],
+        [sg.Text(f"Total Revenue: ${total_revenue:.2f}", size=(80, 1))],
+        [sg.Text(f"Total Cost of Goods Sold: ${total_cogs:.2f}")],
+        [sg.Text(f"Overall Profit Margin: {overall_profit_margin:.2f}%")],
+        [sg.Button('Close')]
+    ]
+
+    window = sg.Window('Generated Report', layout)
+
+    while True:
+        event, values = window.read()
+
+        if event == sg.WIN_CLOSED or event == 'Close':
+            break
+
+    window.close()
+
 # Define the layout of the main menu
 menu_layout = [
     [sg.Button('View Stock Levels', size=(15, 1))],
@@ -389,30 +449,56 @@ menu_layout = [
 # Create the main menu window
 menu_window = sg.Window('Main Menu', menu_layout, size=(200, 400), element_justification="c", resizable=True)
 
+# Check for reorder alerts
+cursor.execute('''
+            SELECT COUNT(*)
+            FROM Product
+            WHERE QuantityInStock <= ReorderLevel
+        ''')
+alert_count = cursor.fetchone()[0]
+
 # Event loop for the main menu
 while True:
+    if alert_count > 0:
+        sg.popup(f"{alert_count} product(s) need to be reordered. Check option 3 for details.", title="Reorder Alerts")
+
     event, values = menu_window.read()
 
     if event == sg.WIN_CLOSED or event == 'Exit':
         break
     elif event == 'View Stock Levels':
+        menu_window.hide()
         view_stock_levels_gui()
+        menu_window.un_hide()
     elif event == 'View Sales Data':
+        menu_window.hide()
         view_sales_data_gui()
+        menu_window.un_hide()
     elif event == 'Reorder Alerts':
+        menu_window.hide()
         generate_reorder_alerts_gui()
+        menu_window.un_hide()
     elif event == 'Generate Reports':
-        sg.popup('Generate Reports Function')  # Placeholder for now
+        menu_window.hide()
+        generate_reports_gui()
+        menu_window.un_hide()
     elif event == 'Add Product':
-        menu_window.hide()  # Hide the main menu window
+        menu_window.hide()
         add_product_gui()
-        menu_window.un_hide()  # Show the main menu window again
+        menu_window.un_hide()
+        menu_window.un_hide()
     elif event == 'Update Product':
+        menu_window.hide()
         update_product_gui()
+        menu_window.un_hide()
     elif event == 'Delete Product':
+        menu_window.hide()
         delete_product_gui()
+        menu_window.un_hide()
     elif event == 'Add Sales':
+        menu_window.hide()
         add_sales_gui()
+        menu_window.un_hide()
 
 # Close the main menu window
 menu_window.close()
