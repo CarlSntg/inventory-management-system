@@ -447,18 +447,19 @@ menu_layout = [
 ]
 
 # Create the main menu window
-menu_window = sg.Window('Main Menu', menu_layout, size=(200, 400), element_justification="c", resizable=True)
-
-# Check for reorder alerts
-cursor.execute('''
-            SELECT COUNT(*)
-            FROM Product
-            WHERE QuantityInStock <= ReorderLevel
-        ''')
-alert_count = cursor.fetchone()[0]
+menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True)
 
 # Event loop for the main menu
 while True:
+
+    # Check for reorder alerts
+    cursor.execute('''
+                SELECT COUNT(*)
+                FROM Product
+                WHERE QuantityInStock <= ReorderLevel
+            ''')
+    alert_count = cursor.fetchone()[0]
+
     if alert_count > 0:
         sg.popup(f"{alert_count} product(s) need to be reordered. Check option 3 for details.", title="Reorder Alerts")
 
