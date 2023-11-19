@@ -1,7 +1,6 @@
 import sqlite3
 import PySimpleGUI as sg
 import datetime
-from prettytable import PrettyTable
 
 # Connect to SQLite database or create it if not exists
 conn = sqlite3.connect("inventory_management.db")
@@ -29,6 +28,7 @@ cursor.execute('''
     )
 ''')
 
+
 # Function to display stock levels in a PySimpleGUI window
 def view_stock_levels_gui():
     cursor.execute("SELECT * FROM Product")
@@ -41,7 +41,8 @@ def view_stock_levels_gui():
     # Create a PrettyTable and add columns
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level", "Price", "Cost Per Unit"],
-                  auto_size_columns=False, justification='right', display_row_numbers=False, num_rows=min(25, len(rows)))],
+                  auto_size_columns=False, justification='right', display_row_numbers=False,
+                  num_rows=min(25, len(rows)))],
         [sg.Button('OK')]
     ]
 
@@ -55,6 +56,7 @@ def view_stock_levels_gui():
 
     window.close()
 
+
 # Function to display sales data in a PySimpleGUI window
 def view_sales_data_gui():
     cursor.execute("SELECT * FROM Sales")
@@ -67,7 +69,8 @@ def view_sales_data_gui():
     # Create a PrettyTable and add columns
     layout = [
         [sg.Table(values=rows, headings=["Sale ID", "Product ID", "Quantity Sold", "Sale Date"],
-                  auto_size_columns=False, justification='right', display_row_numbers=False, num_rows=min(25, len(rows)))],
+                  auto_size_columns=False, justification='right', display_row_numbers=False,
+                  num_rows=min(25, len(rows)))],
         [sg.Button('OK')]
     ]
 
@@ -80,6 +83,7 @@ def view_sales_data_gui():
             break
 
     window.close()
+
 
 # Function to generate reorder alerts in a PySimpleGUI window
 def generate_reorder_alerts_gui():
@@ -98,7 +102,8 @@ def generate_reorder_alerts_gui():
     # Create a PrettyTable and add columns
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level"],
-                  auto_size_columns=False, justification='right', display_row_numbers=False, num_rows=min(25, len(rows)))],
+                  auto_size_columns=False, justification='right', display_row_numbers=False,
+                  num_rows=min(25, len(rows)))],
         [sg.Button('OK')]
     ]
 
@@ -111,6 +116,7 @@ def generate_reorder_alerts_gui():
             break
 
     window.close()
+
 
 # Function to add a new product using PySimpleGUI
 def add_product_gui():
@@ -143,10 +149,12 @@ def add_product_gui():
             ''', (product_name, quantity_in_stock, reorder_level, unit_price, cost_per_unit))
 
             conn.commit()
-            sg.popup(f'Product Added:\nName: {product_name}\nQuantity in Stock: {quantity_in_stock}\nReorder Level: {reorder_level}\nCost Per Unit: {cost_per_unit}\nUnit Price: {unit_price}')
+            sg.popup(
+                f'Product Added:\nName: {product_name}\nQuantity in Stock: {quantity_in_stock}\nReorder Level: {reorder_level}\nCost Per Unit: {cost_per_unit}\nUnit Price: {unit_price}')
             break
 
     add_product_window.close()
+
 
 # Function to update a product using PySimpleGUI
 def update_product_gui():
@@ -251,6 +259,7 @@ def update_product_gui():
 
     update_product_window.close()
 
+
 # Function to delete a product using PySimpleGUI
 def delete_product_gui():
     layout = [
@@ -297,6 +306,7 @@ def delete_product_gui():
             break
 
     delete_product_window.close()
+
 
 # Function to add sales data using PySimpleGUI
 def add_sales_gui():
@@ -369,10 +379,12 @@ def add_sales_gui():
             ''', (product_id, quantity_sold, sale_date))
 
             conn.commit()
-            sg.popup(f'Sales data added successfully:\nProduct ID: {product_id}\nQuantity Sold: {quantity_sold}\nSale Date: {sale_date}')
+            sg.popup(f'Sales data added successfully:\nProduct ID: {product_id}\nQuantity Sold: {quantity_sold}\nSale '
+                     f'Date: {sale_date}')
             break
 
     add_sales_window.close()
+
 
 # Function to generate reports using PySimpleGUI
 def generate_reports_gui():
@@ -416,7 +428,7 @@ def generate_reports_gui():
     # Create a PySimpleGUI window to display the report
     layout = [
         [sg.Table(values=table_data, headings=header, auto_size_columns=False,
-                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows*2)), size=(800, 200))],
+                  justification='left', display_row_numbers=False, num_rows=min(25, len(rows * 2)), size=(800, 200))],
         [sg.Text(f"Total Revenue: ${total_revenue:.2f}", size=(80, 1))],
         [sg.Text(f"Total Cost of Goods Sold: ${total_cogs:.2f}")],
         [sg.Text(f"Overall Profit Margin: {overall_profit_margin:.2f}%")],
@@ -432,6 +444,7 @@ def generate_reports_gui():
             break
 
     window.close()
+
 
 # Define the layout of the main menu
 menu_layout = [
