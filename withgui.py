@@ -149,15 +149,203 @@ def add_product_gui():
 
 # Function to update a product using PySimpleGUI
 def update_product_gui():
-    sg.popup('Update Product Function')
+    layout = [
+        [sg.Text('Product ID:'), sg.InputText(key='product_id')],
+        [sg.Text('New Quantity in Stock:'), sg.InputText(key='new_quantity')],
+        [sg.Text('New Reorder Level:'), sg.InputText(key='new_reorder_level')],
+        [sg.Text('New Unit Price:'), sg.InputText(key='new_unit_price')],
+        [sg.Text('New Cost Per Unit:'), sg.InputText(key='new_cost_per_unit')],
+        [sg.Button('Update'), sg.Button('Cancel')]
+    ]
+
+    update_product_window = sg.Window('Update Product', layout)
+
+    while True:
+        event, values = update_product_window.read()
+
+        if event == sg.WIN_CLOSED or event == 'Cancel':
+            break
+        elif event == 'Update':
+            product_id = values['product_id']
+            new_quantity = values['new_quantity']
+            new_reorder_level = values['new_reorder_level']
+            new_unit_price = values['new_unit_price']
+            new_cost_per_unit = values['new_cost_per_unit']
+
+            # Validate product ID
+            cursor.execute('''
+                SELECT *
+                FROM Product
+                WHERE ProductID = ?
+            ''', (product_id,))
+            product = cursor.fetchone()
+
+            if not product:
+                sg.popup(f"Product with Product ID {product_id} does not exist. Please enter a valid Product ID.")
+                continue
+
+            # Validate new quantity
+            if not new_quantity.isdigit():
+                sg.popup("Invalid input. Please enter a valid integer for the new quantity.")
+                continue
+
+            # Validate new reorder level
+            if not new_reorder_level.isdigit():
+                sg.popup("Invalid input. Please enter a valid integer for the new reorder level.")
+                continue
+
+            # Validate new unit price
+            try:
+                new_unit_price = float(new_unit_price)
+            except ValueError:
+                sg.popup("Invalid input. Please enter a valid float for the new unit price.")
+                continue
+
+            # Validate new cost per unit
+            try:
+                new_cost_per_unit = float(new_cost_per_unit)
+            except ValueError:
+                sg.popup("Invalid input. Please enter a valid float for the new cost per unit.")
+                continue
+
+            # Update the product details in the database
+            cursor.execute('''
+                UPDATE Product
+                SET QuantityInStock = ?,
+                    ReorderLevel = ?,
+                    UnitPrice = ?,
+                    CostPerUnit = ?
+                WHERE ProductID = ?
+            ''', (int(new_quantity), int(new_reorder_level), float(new_unit_price), float(new_cost_per_unit), int(product_id)))
+
+            conn.commit()
+            sg.popup(f'Product updated successfully:\nProduct ID: {product_id}\nNew Quantity in Stock: {new_quantity}\nNew Reorder Level: {new_reorder_level}\nNew Unit Price: {new_unit_price}\nNew Cost Per Unit: {new_cost_per_unit}')
+            break
+
+    update_product_window.close()
 
 # Function to delete a product using PySimpleGUI
 def delete_product_gui():
-    sg.popup('Delete Product Function')
+    layout = [
+        [sg.Text('Product ID to Delete:'), sg.InputText(key='product_id')],
+        [sg.Button('Delete'), sg.Button('Cancel')]
+    ]
+
+    delete_product_window = sg.Window('Delete Product', layout)
+
+    while True:
+        event, values = delete_product_window.read()
+
+        if event == sg.WIN_CLOSED or event == 'Cancel':
+            break
+        elif event == 'Delete':
+            product_id = values['product_id']
+
+            # Validate product ID
+            cursor.execute('''
+                SELECT *
+                FROM Product
+                WHERE ProductID = ?
+            ''', (product_id,))
+            product = cursor.fetchone()
+
+            if not product:
+                sg.popup(f"Product with Product ID {product_id} does not exist. Please enter a valid Product ID.")
+                continue
+
+            # Delete associated sales data
+            cursor.execute('''
+                DELETE FROM Sales
+                WHERE ProductID = ?
+            ''', (product_id,))
+
+            # Delete the product from the database
+            cursor.execute('''
+                DELETE FROM Product
+                WHERE ProductID = ?
+            ''', (product_id,))
+
+            conn.commit()
+            sg.popup(f'Product and associated sales data deleted successfully:\nProduct ID: {product_id}')
+            break
+
+    delete_product_window.close()
 
 # Function to add sales data using PySimpleGUI
 def add_sales_gui():
-    sg.popup('Add Sales Function')
+    layout = [
+        [sg.Text('Product ID:'), sg.InputText(key='product_id')],
+        [sg.Text('Quantity Sold:'), sg.InputText(key='quantity_sold')],
+        [sg.Text('Sale Date (YYYY-MM-DD):'), sg.InputText(key='sale_date')],
+        [sg.Button('Add'), sg.Button('Cancel')]
+    ]
+
+    add_sales_window = sg.Window('Add Sales', layout)
+
+    while True:
+        event, values = add_sales_window.read()
+
+        if event == sg.WIN_CLOSED or event == 'Cancel':
+            break
+        elif event == 'Add':
+            product_id = values['product_id']
+            quantity_sold = values['quantity_sold']
+            sale_date_str = values['sale_date']
+
+            # Validate product ID
+            cursor.execute('''
+                SELECT QuantityInStock
+                FROM Product
+                WHERE ProductID = ?
+            ''', (product_id,))
+            product = cursor.fetchone()
+
+            if not product:
+                sg.popup(f"Product with Product ID {product_id} does not exist. Please enter a valid Product ID.")
+                continue
+
+            current_quantity = product[0]
+
+            # Validate quantity sold
+            if not quantity_sold.isdigit():
+                sg.popup("Invalid input. Please enter a valid integer for the quantity sold.")
+                continue
+
+            quantity_sold = int(quantity_sold)
+
+            if quantity_sold > current_quantity:
+                sg.popup(f"Error: Quantity in stock ({current_quantity}) is less than quantity sold ({quantity_sold}).")
+                continue
+
+            # Validate sale date
+            if sale_date_str:
+                try:
+                    sale_date = datetime.datetime.strptime(sale_date_str, "%Y-%m-%d").date()
+                except ValueError:
+                    sg.popup("Invalid date format. Please use YYYY-MM-DD.")
+                    continue
+            else:
+                sale_date = datetime.date.today()
+
+            # Update the quantity in stock
+            new_quantity = current_quantity - quantity_sold
+            cursor.execute('''
+                UPDATE Product
+                SET QuantityInStock = ?
+                WHERE ProductID = ?
+            ''', (new_quantity, product_id))
+
+            # Insert the sales data into the database
+            cursor.execute('''
+                INSERT INTO Sales (ProductID, QuantitySold, SaleDate)
+                VALUES (?, ?, ?)
+            ''', (product_id, quantity_sold, sale_date))
+
+            conn.commit()
+            sg.popup(f'Sales data added successfully:\nProduct ID: {product_id}\nQuantity Sold: {quantity_sold}\nSale Date: {sale_date}')
+            break
+
+    add_sales_window.close()
 
 # Define the layout of the main menu
 menu_layout = [
