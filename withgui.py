@@ -449,22 +449,12 @@ def generate_reports():
 
 # Define the layout of the main menu
 menu_layout = [
-    [sg.Text('Inventory Management System', font=('Helvetica', 25), justification='center', pad=((0, 0), (30, 30)))],
-    [sg.Button('View Stock Levels', size=(15, 1)), sg.Button('Add Product', size=(15, 1))],
-    [sg.Button('View Sales Data', size=(15, 1)), sg.Button('Update Product', size=(15, 1))],
-    [sg.Button('Reorder Alerts', size=(15, 1)), sg.Button('Delete Product', size=(15, 1))],
-    [sg.Button('Generate Reports', size=(15, 1)), sg.Button('Add Sales', size=(15, 1))],
-    [sg.Button('Exit', size=(15, 1))]
-
-    # [sg.Button('View Stock Levels', size=(15, 1)),],
-    # [sg.Button('View Sales Data', size=(15, 1))],
-    # [sg.Button('Reorder Alerts', size=(15, 1))],
-    # [sg.Button('Generate Reports', size=(15, 1))],
-    # [sg.Button('Add Product', size=(15, 1))],
-    # [sg.Button('Update Product', size=(15, 1))],
-    # [sg.Button('Delete Product', size=(15, 1))],
-    # [sg.Button('Add Sales', size=(15, 1))],
-    # [sg.Button('Exit', size=(15, 1))]
+    [sg.Text('Inventory Management System', font=('Helvetica', 25), justification='center', pad=((0, 0), (5, 5)))],
+    [sg.Button('View Stock Levels', size=(20, 2)), sg.Button('Add Product', size=(20, 2))],
+    [sg.Button('View Sales Data', size=(20, 2)), sg.Button('Update Product', size=(20, 2))],
+    [sg.Button('Reorder Alerts', size=(20, 2)), sg.Button('Delete Product', size=(20, 2))],
+    [sg.Button('Generate Reports', size=(20, 2)), sg.Button('Add Sales', size=(20, 2))],
+    [sg.Button('Exit', size=(20, 2))]
 ]
 
 # Create the main menu window
