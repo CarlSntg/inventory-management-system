@@ -73,7 +73,7 @@ def view_sales_data():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('View Sales Data', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    window = sg.Window('View Sales Data', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -105,7 +105,7 @@ def generate_reorder_alerts():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('Reorder Alerts', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    window = sg.Window('Reorder Alerts', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -128,7 +128,7 @@ def add_product():
 
     ]
 
-    add_product_window = sg.Window('Add Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    add_product_window = sg.Window('Add Product', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = add_product_window.read()
@@ -171,7 +171,7 @@ def update_product():
         [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Update', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    update_product_window = sg.Window('Update Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    update_product_window = sg.Window('Update Product', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = update_product_window.read()
@@ -271,7 +271,7 @@ def delete_product():
         [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Delete', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    delete_product_window = sg.Window('Delete Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    delete_product_window = sg.Window('Delete Product', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = delete_product_window.read()
@@ -321,7 +321,7 @@ def add_sales():
         [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Add', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    add_sales_window = sg.Window('Add Sales', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    add_sales_window = sg.Window('Add Sales', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = add_sales_window.read()
@@ -436,7 +436,7 @@ def generate_reports():
         [sg.Button('Close', size=(10, 1), pad=(10, 5), expand_x=True)]
     ]
 
-    window = sg.Window('Generated Report', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
+    window = sg.Window('Generated Report', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -458,9 +458,10 @@ menu_layout = [
 ]
 
 # Create the main menu window
-menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True, size=(600,300))
+menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True, size=(600, 300))
 
 if __name__ == '__main__':
+    sg.theme('DarkTeal2')
     # Event loop for the main menu
     while True:
 
