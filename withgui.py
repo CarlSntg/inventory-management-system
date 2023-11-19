@@ -124,7 +124,7 @@ def add_product():
         [sg.Text('Reorder Level:', s=15, justification="r"), sg.InputText(key='reorder_level')],
         [sg.Text('Cost Per Unit:', s=15, justification="r"), sg.InputText(key='cost_per_unit')],
         [sg.Text('Unit Price:', s=15, justification="r"), sg.InputText(key='unit_price')],
-        [sg.Button('Add', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
+        [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Add', size=(10, 1), pad=(0, 5), expand_x=True)]
 
     ]
 
@@ -168,7 +168,7 @@ def update_product():
         [sg.Text('New Reorder Level:', s=17, justification="r"), sg.InputText(key='new_reorder_level')],
         [sg.Text('New Unit Price:', s=17, justification="r"), sg.InputText(key='new_unit_price')],
         [sg.Text('New Cost Per Unit:', s=17, justification="r"), sg.InputText(key='new_cost_per_unit')],
-        [sg.Button('Update', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
+        [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Update', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
     update_product_window = sg.Window('Update Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
@@ -268,7 +268,7 @@ def update_product():
 def delete_product():
     layout = [
         [sg.Text('Product ID to Delete:'), sg.InputText(key='product_id')],
-        [sg.Button('Delete', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
+        [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Delete', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
     delete_product_window = sg.Window('Delete Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
@@ -318,7 +318,7 @@ def add_sales():
         [sg.Text('Product ID:', s=20, justification="r"), sg.InputText(key='product_id')],
         [sg.Text('Quantity Sold:', s=20, justification="r"), sg.InputText(key='quantity_sold')],
         [sg.Text('Sale Date (YYYY-MM-DD):', s=20, justification="r"), sg.InputText(key='sale_date')],
-        [sg.Button('Add', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
+        [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Add', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
     add_sales_window = sg.Window('Add Sales', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
