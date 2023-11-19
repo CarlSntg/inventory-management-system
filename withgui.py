@@ -38,7 +38,6 @@ def view_stock_levels():
         sg.popup("No products in the inventory.")
         return
 
-    # Create a PrettyTable and add columns
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level", "Price", "Cost Per Unit"],
                   auto_size_columns=False, justification='right', display_row_numbers=False,
@@ -46,7 +45,7 @@ def view_stock_levels():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('View Stock Levels', layout, grab_anywhere=False, resizable=True)
+    window = sg.Window('View Stock Levels', layout, grab_anywhere=False, resizable=True, element_justification="center")
 
     while True:
         event, values = window.read()
@@ -74,7 +73,7 @@ def view_sales_data():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('View Sales Data', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    window = sg.Window('View Sales Data', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -106,7 +105,7 @@ def generate_reorder_alerts():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('Reorder Alerts', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    window = sg.Window('Reorder Alerts', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -129,7 +128,7 @@ def add_product():
 
     ]
 
-    add_product_window = sg.Window('Add Product', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    add_product_window = sg.Window('Add Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = add_product_window.read()
@@ -172,7 +171,7 @@ def update_product():
         [sg.Button('Update', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    update_product_window = sg.Window('Update Product', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    update_product_window = sg.Window('Update Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = update_product_window.read()
@@ -272,7 +271,7 @@ def delete_product():
         [sg.Button('Delete', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    delete_product_window = sg.Window('Delete Product', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    delete_product_window = sg.Window('Delete Product', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = delete_product_window.read()
@@ -316,13 +315,13 @@ def delete_product():
 # Function to add sales data
 def add_sales():
     layout = [
-        [sg.Text('Product ID:', s=15, justification="r"), sg.InputText(key='product_id')],
-        [sg.Text('Quantity Sold:', s=15, justification="r"), sg.InputText(key='quantity_sold')],
-        [sg.Text('Sale Date (YYYY-MM-DD):', s=15, justification="r"), sg.InputText(key='sale_date')],
+        [sg.Text('Product ID:', s=20, justification="r"), sg.InputText(key='product_id')],
+        [sg.Text('Quantity Sold:', s=20, justification="r"), sg.InputText(key='quantity_sold')],
+        [sg.Text('Sale Date (YYYY-MM-DD):', s=20, justification="r"), sg.InputText(key='sale_date')],
         [sg.Button('Add', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Cancel', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
-    add_sales_window = sg.Window('Add Sales', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    add_sales_window = sg.Window('Add Sales', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = add_sales_window.read()
@@ -437,7 +436,7 @@ def generate_reports():
         [sg.Button('Close', size=(10, 1), pad=(10, 5), expand_x=True)]
     ]
 
-    window = sg.Window('Generated Report', layout, grab_anywhere=False, resizable=True, size=(600,300))
+    window = sg.Window('Generated Report', layout, grab_anywhere=False, resizable=True, size=(600,300), element_justification="center")
 
     while True:
         event, values = window.read()
