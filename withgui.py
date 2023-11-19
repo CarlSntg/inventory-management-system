@@ -29,8 +29,8 @@ cursor.execute('''
 ''')
 
 
-# Function to display stock levels in a PySimpleGUI window
-def view_stock_levels_gui():
+# Function to display stock levels
+def view_stock_levels():
     cursor.execute("SELECT * FROM Product")
     rows = cursor.fetchall()
 
@@ -57,8 +57,8 @@ def view_stock_levels_gui():
     window.close()
 
 
-# Function to display sales data in a PySimpleGUI window
-def view_sales_data_gui():
+# Function to display sales data
+def view_sales_data():
     cursor.execute("SELECT * FROM Sales")
     rows = cursor.fetchall()
 
@@ -85,8 +85,8 @@ def view_sales_data_gui():
     window.close()
 
 
-# Function to generate reorder alerts in a PySimpleGUI window
-def generate_reorder_alerts_gui():
+# Function to generate reorder alerts
+def generate_reorder_alerts():
     cursor.execute('''
         SELECT ProductID, ProductName, QuantityInStock, ReorderLevel
         FROM Product
@@ -99,7 +99,6 @@ def generate_reorder_alerts_gui():
         sg.popup("No products need to be reordered.")
         return
 
-    # Create a PrettyTable and add columns
     layout = [
         [sg.Table(values=rows, headings=["Product ID", "Name", "Stock", "Reorder Level"],
                   auto_size_columns=False, justification='right', display_row_numbers=False,
@@ -118,8 +117,8 @@ def generate_reorder_alerts_gui():
     window.close()
 
 
-# Function to add a new product using PySimpleGUI
-def add_product_gui():
+# Function to add a new product
+def add_product():
     layout = [
         [sg.Text('Product Name:', s=15, justification="r"), sg.InputText(key='product_name')],
         [sg.Text('Quantity in Stock:', s=15, justification="r"), sg.InputText(key='quantity_in_stock')],
@@ -150,14 +149,19 @@ def add_product_gui():
 
             conn.commit()
             sg.popup(
-                f'Product Added:\nName: {product_name}\nQuantity in Stock: {quantity_in_stock}\nReorder Level: {reorder_level}\nCost Per Unit: {cost_per_unit}\nUnit Price: {unit_price}')
+                f'Product Added:\n'
+                f'Name: {product_name}\n'
+                f'Quantity in Stock: {quantity_in_stock}\n'
+                f'Reorder Level: {reorder_level}\n'
+                f'Cost Per Unit: {cost_per_unit}\n'
+                f'Unit Price: {unit_price}')
             break
 
     add_product_window.close()
 
 
-# Function to update a product using PySimpleGUI
-def update_product_gui():
+# Function to update a product
+def update_product():
     layout = [
         [sg.Text('Product ID:', s=17, justification="r"), sg.InputText(key='product_id')],
         [sg.Text('New Quantity in Stock:', s=17, justification="r"), sg.InputText(key='new_quantity')],
@@ -260,8 +264,8 @@ def update_product_gui():
     update_product_window.close()
 
 
-# Function to delete a product using PySimpleGUI
-def delete_product_gui():
+# Function to delete a product
+def delete_product():
     layout = [
         [sg.Text('Product ID to Delete:'), sg.InputText(key='product_id')],
         [sg.Button('Delete'), sg.Button('Cancel')]
@@ -308,8 +312,8 @@ def delete_product_gui():
     delete_product_window.close()
 
 
-# Function to add sales data using PySimpleGUI
-def add_sales_gui():
+# Function to add sales data
+def add_sales():
     layout = [
         [sg.Text('Product ID:', s=15, justification="r"), sg.InputText(key='product_id')],
         [sg.Text('Quantity Sold:', s=15, justification="r"), sg.InputText(key='quantity_sold')],
@@ -386,9 +390,8 @@ def add_sales_gui():
     add_sales_window.close()
 
 
-# Function to generate reports using PySimpleGUI
-def generate_reports_gui():
-    # Execute SQL queries to get data for the report
+# Function to generate reports
+def generate_reports():
     cursor.execute('''
         SELECT Product.ProductID, Product.ProductName, SUM(Sales.QuantitySold) as TotalSales
         FROM Product
@@ -402,7 +405,6 @@ def generate_reports_gui():
         sg.popup("No sales data available for generating reports.")
         return
 
-    # Create a PySimpleGUI table to hold the report
     header = ["Product ID", "Name", "Total Sales"]
     table_data = [list(row) for row in rows]
 
@@ -425,7 +427,6 @@ def generate_reports_gui():
     # Calculate overall profit margin
     overall_profit_margin = 0 if total_revenue == 0 else ((total_revenue - total_cogs) / total_revenue) * 100
 
-    # Create a PySimpleGUI window to display the report
     layout = [
         [sg.Table(values=table_data, headings=header, auto_size_columns=False,
                   justification='left', display_row_numbers=False, num_rows=min(25, len(rows * 2)))],
@@ -462,57 +463,58 @@ menu_layout = [
 # Create the main menu window
 menu_window = sg.Window('Main Menu', menu_layout, element_justification="c", resizable=True)
 
-# Event loop for the main menu
-while True:
+if __name__ == '__main__':
+    # Event loop for the main menu
+    while True:
 
-    # Check for reorder alerts
-    cursor.execute('''
-                SELECT COUNT(*)
-                FROM Product
-                WHERE QuantityInStock <= ReorderLevel
-            ''')
-    alert_count = cursor.fetchone()[0]
+        # Check for reorder alerts
+        cursor.execute('''
+                    SELECT COUNT(*)
+                    FROM Product
+                    WHERE QuantityInStock <= ReorderLevel
+                ''')
+        alert_count = cursor.fetchone()[0]
 
-    if alert_count > 0:
-        sg.popup(f"{alert_count} product(s) need to be reordered. Check option 3 for details.", title="Reorder Alerts")
+        if alert_count > 0:
+            sg.popup(f"{alert_count} product(s) need to be reordered. Check reorder alerts for details.", title="Reorder Alerts")
 
-    event, values = menu_window.read()
+        event, values = menu_window.read()
 
-    if event == sg.WIN_CLOSED or event == 'Exit':
-        break
-    elif event == 'View Stock Levels':
-        menu_window.hide()
-        view_stock_levels_gui()
-        menu_window.un_hide()
-    elif event == 'View Sales Data':
-        menu_window.hide()
-        view_sales_data_gui()
-        menu_window.un_hide()
-    elif event == 'Reorder Alerts':
-        menu_window.hide()
-        generate_reorder_alerts_gui()
-        menu_window.un_hide()
-    elif event == 'Generate Reports':
-        menu_window.hide()
-        generate_reports_gui()
-        menu_window.un_hide()
-    elif event == 'Add Product':
-        menu_window.hide()
-        add_product_gui()
-        menu_window.un_hide()
-        menu_window.un_hide()
-    elif event == 'Update Product':
-        menu_window.hide()
-        update_product_gui()
-        menu_window.un_hide()
-    elif event == 'Delete Product':
-        menu_window.hide()
-        delete_product_gui()
-        menu_window.un_hide()
-    elif event == 'Add Sales':
-        menu_window.hide()
-        add_sales_gui()
-        menu_window.un_hide()
+        if event == sg.WIN_CLOSED or event == 'Exit':
+            break
+        elif event == 'View Stock Levels':
+            menu_window.hide()
+            view_stock_levels()
+            menu_window.un_hide()
+        elif event == 'View Sales Data':
+            menu_window.hide()
+            view_sales_data()
+            menu_window.un_hide()
+        elif event == 'Reorder Alerts':
+            menu_window.hide()
+            generate_reorder_alerts()
+            menu_window.un_hide()
+        elif event == 'Generate Reports':
+            menu_window.hide()
+            generate_reports()
+            menu_window.un_hide()
+        elif event == 'Add Product':
+            menu_window.hide()
+            add_product()
+            menu_window.un_hide()
+            menu_window.un_hide()
+        elif event == 'Update Product':
+            menu_window.hide()
+            update_product()
+            menu_window.un_hide()
+        elif event == 'Delete Product':
+            menu_window.hide()
+            delete_product()
+            menu_window.un_hide()
+        elif event == 'Add Sales':
+            menu_window.hide()
+            add_sales()
+            menu_window.un_hide()
 
-# Close the main menu window
-menu_window.close()
+    # Close the main menu window
+    menu_window.close()
