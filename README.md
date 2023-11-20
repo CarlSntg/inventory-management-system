@@ -22,7 +22,7 @@ Run the script using a Python interpreter.
     python inventory_management.py
 
 ## Features
-#### 1. View Stock Levels
+1. View Stock Levels
 - Displays the current stock levels of all products in a tabular format.
 
 2. View Sales Data
