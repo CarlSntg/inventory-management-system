@@ -6,13 +6,12 @@ This is an Inventory Management System implemented in Python using SQLite for da
 Make sure you have the following dependencies installed:
 
     sqlite3
-    datetime
     PySimpleGUI
     matplotlib
 
 Install missing dependencies using:
 
-    pip install sqlite3 datetime PySimpleGUI matplotlib
+    pip install sqlite3 PySimpleGUI matplotlib
 
 ## Setup
 
