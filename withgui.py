@@ -1,6 +1,8 @@
 import sqlite3
 import PySimpleGUI as sg
 import datetime
+import matplotlib.pyplot as plt
+from io import BytesIO
 
 # Connect to SQLite database or create it if not exists
 conn = sqlite3.connect("inventory_management.db")
@@ -50,7 +52,7 @@ def view_stock_levels():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('View Stock Levels', layout, grab_anywhere=False, resizable=True, element_justification="center")
+    window = sg.Window('Stock Levels', layout, grab_anywhere=False, resizable=True, element_justification="center")
 
     while True:
         event, values = window.read()
@@ -82,7 +84,7 @@ def view_sales_data():
         [sg.Button('OK')]
     ]
 
-    window = sg.Window('View Sales Data', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
+    window = sg.Window('Sales Data', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
 
     while True:
         event, values = window.read()
@@ -423,7 +425,7 @@ def generate_reports():
     header = ["Product ID", "Name", "Total Sales"]
     table_data = [list(row) for row in rows]
 
-    max_table_height = 9
+    max_table_height = 18
 
     # Determine the number of rows to display in the table
     num_rows_to_display = min(len(rows), max_table_height)
@@ -447,16 +449,50 @@ def generate_reports():
     # Calculate overall profit margin
     overall_profit_margin = 0 if total_revenue == 0 else ((total_revenue - total_cogs) / total_revenue) * 100
 
+    # Create a line graph of sales over time
+    cursor.execute('''
+        SELECT strftime('%Y-%m', SaleDate) as SaleMonth, SUM(QuantitySold) as MonthlySales
+        FROM Sales
+        GROUP BY SaleMonth
+        ORDER BY SaleMonth
+    ''')
+
+    sales_over_time = cursor.fetchall()
+    months = [row[0] for row in sales_over_time]
+    monthly_sales = [row[1] for row in sales_over_time]
+
+    # Adjust the size of the graph
+    plt.figure(figsize=(5, 3))
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
+
+    plt.plot(months, monthly_sales, marker='o')
+    plt.title('Monthly Sales Over Time')
+    plt.xlabel('Month')
+    plt.ylabel('Total Sales')
+    plt.xticks(rotation=45, ha='right')
+    plt.grid(True)
+
+    # Save the plot to a BytesIO object
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Define the layout with two columns
     layout = [
-        [sg.Table(values=table_data, headings=header, auto_size_columns=False,
-                  justification='left', display_row_numbers=False, num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
+        [sg.Column([
+            [sg.Image(data=buffer.getvalue())]
+        ], element_justification='center'),
+        sg.Column([
+            [sg.Table(values=table_data, headings=header, auto_size_columns=False,
+                      justification='left', display_row_numbers=False, num_rows=num_rows_to_display, enable_events=True, key='-TABLE-')],
+        ], element_justification='center')],
         [sg.Text(f"Total Revenue: ${total_revenue:.2f}")],
         [sg.Text(f"Total Cost of Goods Sold: ${total_cogs:.2f}")],
         [sg.Text(f"Overall Profit Margin: {overall_profit_margin:.2f}%")],
         [sg.Button('Close', size=(10, 1), pad=(10, 5), expand_x=True)]
     ]
 
-    window = sg.Window('Generated Report', layout, grab_anywhere=False, resizable=True, size=(600, 300), element_justification="center")
+    window = sg.Window('Report', layout, grab_anywhere=False, resizable=True, size=(800, 500), element_justification="c")
 
     while True:
         event, values = window.read()
@@ -465,6 +501,7 @@ def generate_reports():
             break
 
     window.close()
+    plt.close()
 
 
 if __name__ == '__main__':
