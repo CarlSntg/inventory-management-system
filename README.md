@@ -14,7 +14,7 @@ Install missing dependencies using:
 
     pip install sqlite3 datetime PySimpleGUI matplotlib
 
-Setup
+## Setup
 
 Download the script (inventory_management.py) to your local machine.
 Run the script using a Python interpreter.
@@ -22,7 +22,7 @@ Run the script using a Python interpreter.
     python inventory_management.py
 
 ## Features
-1. View Stock Levels
+#### 1. View Stock Levels
 - Displays the current stock levels of all products in a tabular format.
 
 2. View Sales Data
