@@ -332,6 +332,7 @@ def add_sales():
         [sg.Text('Product ID:', s=20, justification="r"), sg.InputText(key='product_id')],
         [sg.Text('Quantity Sold:', s=20, justification="r"), sg.InputText(key='quantity_sold')],
         [sg.Text('Sale Date (YYYY-MM-DD):', s=20, justification="r"), sg.InputText(key='sale_date')],
+        [sg.Text('Leave Sale Date blank for current date', text_color='gray')],
         [sg.Button('Cancel', size=(10, 1), pad=(10, 5), expand_x=True), sg.Button('Add', size=(10, 1), pad=(0, 5), expand_x=True)]
     ]
 
